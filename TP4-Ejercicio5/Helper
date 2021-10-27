@@ -1,0 +1,46 @@
+package tp4ejercicio5;
+import java.util.Scanner;
+import java.util.Random;
+
+public class Helper {
+    
+    static Scanner read = new Scanner(System.in);
+    public static Random random = new Random();
+    
+    public static String getString(){
+        String string;
+        do {
+            string = read.nextLine();
+            if (string.isBlank()) { 
+                System.out.println("Debe ingresar una cadena de texto");
+                System.out.print("Ingrese nuevamente: ");
+            }
+        } while (string.isBlank());
+        return string;
+    }
+    
+    public static char getChar(){
+        String character;
+        char singleCharacter;
+        boolean band;
+        do {
+            character = read.nextLine();
+            if(character.isBlank()){
+                System.out.println("No ha ingresado un valor");
+                System.out.print("Ingrese nuevamente: ");
+                band = true;
+            }else{
+                if(character.length()>1){
+                    System.out.println("Ingreso invalido");
+                    System.out.print("Ingrese nuevamente: ");
+                    band=true;
+                }else{
+                 band = false;   
+                }
+            }
+        } while (band!=false);
+        singleCharacter = character.charAt(0);
+        return singleCharacter;
+    }
+    
+}
