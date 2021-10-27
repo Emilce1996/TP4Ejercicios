@@ -1,0 +1,363 @@
+package tp4ejercicio5;
+import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+ 
+public class TP4Ejercicio5 {
+    private ILinkedList<Contact> listSchedule = new SimpleLinkedList<Contact>();
+    private Contact contact;
+ 
+    public static void main(String[] args) {
+        (new TP4Ejercicio5()).open();
+    }
+ 
+    public void open() {
+        char option;
+        do {
+            System.out.println("Ejercicio Agenda");
+            System.out.println("a) Carga manual de la agenda");
+            System.out.println("b) Carga automatica de la agenda");
+            System.out.println("c) Buscar por coincidencia");
+            System.out.println("d) Mostrar agenda e informar trabajo/empresa dado");
+            System.out.println("e) Salir");
+            System.out.print("Ingresar opción: ");
+            option = Helper.getChar();
+        } while (run(option));
+    }
+ 
+    public boolean run(char option) {
+        switch (Character.toUpperCase(option)) {
+            case 'A' -> {
+                if (getListSchedule().size()==0) {
+                    registerManual();
+                    return true;
+                }else{
+                    System.out.println("Ya hay contactos agregados, se van a agregar nuevos contactos.");
+                    registerManual();
+                    return true;
+                }
+            }
+            case 'B' -> {
+                if (getListSchedule().size()==0) {
+                    registerAutomatic();
+                    return true;
+                }else{
+                    System.out.println("Ya hay contactos generados, se van a generar nuevos contactos.");
+                    registerAutomatic();
+                    return true;
+                }
+            }
+            case 'C' -> {
+                if (getListSchedule().size()==0) {
+                    System.out.println("Error...");
+                    System.out.println("Debe agregar contactos primero!");
+                    return true;
+                } else {
+                    search();
+                    return true;
+                }
+            }
+            case 'D' -> {
+                if (getListSchedule().size()==0) {
+                    System.out.println("No hay contactos agregados para mostrar.");
+                    return true;
+                }else{
+                    showListScheduleInfo();
+                    return true;
+                }
+            }
+            case 'E' -> {
+                return false;
+            }
+            default -> {
+                System.out.println("Error...");
+                System.out.println("Intentelo de nuevo!");
+                return true;
+            }
+        }
+    } 
+    
+    public void showListScheduleInfo(){
+        int contJob=0;
+        Iterator<Contact> iter = getListSchedule().iterator();
+        System.out.print("Ingrese trabajo/empresa de contactos: ");
+        String searchJob = Helper.getString();
+        Contact contactIter;
+        System.out.println("Se mostrara la lista de contactos: ");
+        while(iter.hasNext()){
+            contactIter=iter.next();
+            System.out.println(contactIter);
+            if(contactIter.getJob().toUpperCase().equals(searchJob.toUpperCase())){
+                contJob++;
+            }
+        }
+        System.out.println("Contactos que corresponden a "+searchJob+" : "+contJob);
+    }
+    
+    public void search() {
+        ILinkedList<Contact> listCoinciden = new SimpleLinkedList<>();
+        Iterator<Contact> iter = getListSchedule().iterator();
+        System.out.print("Ingrese busqueda: ");
+        String searchName = Helper.getString();
+        Contact contactIter;
+        while (iter.hasNext()) {
+            contactIter = iter.next();
+            if (contactIter.getName().toUpperCase().contains(searchName.toUpperCase())) {
+                listCoinciden.addFirst(contactIter);
+            }
+        }
+        System.out.println(listCoinciden.size() != 0 ? "Nueva lista: \n" + listCoinciden : "No se encontraron coincidencias para " + searchName);
+    }
+ 
+    public void registerAutomatic() {
+        String name, jod, telefone = null, mail;
+        int amount = Helper.random.nextInt(20 - 7 + 1) + 7,i;
+        System.out.println("Se generaron los siguientes contactos: ");
+        for (i = 0; i <= amount; i++) {
+            if(getListSchedule().size()==someTelefone.length){
+                System.out.println("Se llego al limite de generar automatico");
+                break;
+            }
+            name = someName[Helper.random.nextInt(someName.length)];
+            jod = someJob[Helper.random.nextInt(someJob.length)];
+            do {
+                telefone = someTelefone[Helper.random.nextInt(someTelefone.length)];
+            } while (repeatedNumber(telefone));
+            mail = someMail[Helper.random.nextInt(someMail.length)];
+            this.contact = new Contact(name, jod, telefone, mail);
+            System.out.println(this.contact);
+            getListSchedule().addFirst(contact);
+        }
+    }
+ 
+    public void registerManual() {
+        String name, jod, telefone, mail;
+        char resp = 0, option;
+        label:
+        do {
+            do {
+                System.out.print("Ingrese nombre: ");
+                name = Helper.getString();
+            } while (validateName(name));
+            System.out.print("Ingrese trabajo/empresa: ");
+            jod = Helper.getString();
+            do {
+                System.out.print("Ingrese numero de telefono: ");
+                telefone = Helper.getString();
+            } while (validateTelefone(telefone));
+            if (repeatedNumber(telefone)) {
+                System.out.println("Es un numero de telefono repetido!");
+                option = menu2();
+                switch (Character.toUpperCase(option)) {
+                    case 'A' -> telefone = newTelefone(telefone);
+                    case 'B' -> {
+                        continue;
+                    }
+                }
+            }
+            do {
+                System.out.print("Ingrese correo electronico: ");
+                mail = Helper.getString();
+            } while (validateEmail(mail));
+            this.contact = new Contact(name, jod, telefone, mail);
+            System.out.println("Se agendo el siguiente contacto: \n" + this.contact);
+            getListSchedule().addFirst(contact);
+            do {
+                System.out.print("Desea agregar otro contacto (S/N): ");
+                resp = Helper.getChar();
+            } while (validateResp(resp));
+        } while (Character.toUpperCase(resp) == 'S');
+    }
+ 
+    public String newTelefone(String telefone) {
+        System.out.println("El telefono repetido es: "+telefone);
+        String newTelefone;
+        do {
+            System.out.print("Ingrese nuevo numero de telefono: ");
+            newTelefone = Helper.getString();
+        } while (validateTelefone(newTelefone));
+        if (newTelefone.equalsIgnoreCase(telefone)) {
+            System.out.println("Error...");
+            System.out.println("Usted ingreso el mismo numero de telefono");
+            return newTelefone = newTelefone(telefone);
+        }
+        return newTelefone;
+    }
+ 
+    public boolean validateOption(char option) {
+        switch (Character.toUpperCase(option)) {
+            case 'A' -> {
+                return false;
+            }
+            case 'B' -> {
+                return false;
+            }
+            default -> {
+                System.out.println("Error...");
+                System.out.println("Intentelo de nuevo");
+                return true;
+            }
+        }
+    }
+ 
+    public char menu2() {
+        char option;
+        do {
+            System.out.println("(a) Ingresar otro numero");
+            System.out.println("(b) Cancelar");
+            System.out.print("Opcion: ");
+            option = Helper.getChar();
+        } while (validateOption(option));
+        return option;
+    }
+ 
+    public boolean repeatedNumber(String telefone) {
+        Iterator<Contact> iter = getListSchedule().iterator();
+        while (iter.hasNext()) {
+            if (iter.next().getTelefone().equalsIgnoreCase(telefone)) {
+                return true;
+            }
+        }
+        return false;
+    }
+ 
+    public boolean validateResp(char resp) {
+        switch (Character.toUpperCase(resp)) {
+            case 'S' -> {
+                return false;
+            }
+            case 'N' -> {
+                return false;
+            }
+            default -> {
+                System.out.println("Error...");
+                System.out.println("Debe ingresar S/N");
+                return true;
+            }
+        }
+    }
+ 
+    public boolean validateTelefone(String telefone) {
+        Pattern pattern = Pattern.compile("^(388)[0-9]{9}$");
+        Matcher mather = pattern.matcher(telefone);
+        if (mather.find()) {
+            return false;
+        } else {
+            System.out.println("Error...");
+            System.out.println("El Num. de Celular debe estar comprendido entre 12 cifras");
+            System.out.println("EJ: 388154040314");
+            return true;
+        }
+    }
+ 
+    public boolean validateEmail(String mail) {
+        Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+        Matcher mather = pattern.matcher(mail);
+        if (mather.find()) {
+            return false;
+        } else {
+            System.out.println("Error...");
+            System.out.println("El mail ingresado es incorrecto");
+            return true;
+        }
+    }
+ 
+    public boolean validateName(String name) {
+        int valueASCII;
+        for (int i = 0; i < name.length(); i++) {
+            valueASCII = (int) Character.toUpperCase(name.charAt(i));
+            if (!((valueASCII >= 65 && valueASCII <= 90) || (valueASCII == ' '))) {
+                System.out.println("Error...");
+                System.out.println("El nombre ingresado esta mal escrito ");
+                return true;
+            }
+        }
+        return false;
+    }
+ 
+    private final String[] someMail = {
+        "analiatorrez-5476@gmail.com",
+        "kimberlycray-2457@gmail.com",
+        "lourdessori-2238@gmail.com",
+        "cowemanfed-3298@gmail.com",
+        "jaimeprin-4596@gmail.com",
+        "estherbezarius-3837@gmail.com",
+        "leomozart-5879@hotmail.com",
+        "treehappy-6753@hotmail.com",
+        "grecemary-3856@hotmail.com",
+        "dreamdevs-1284@hotmail.com",
+        "sarablade-9568@hotmail.com",
+        "painrobert-8657@hotmail.com",};
+ 
+    private final String[] someTelefone = {
+        "388154040314",
+        "388154457864",
+        "388154864356",
+        "388156846139",
+        "388156878643",
+        "388158642196",
+        "388158865219",
+        "388156688648",
+        "388155184621",
+        "388158642814",
+        "388156651879",
+        "388156898643",
+        "388158644982",
+        "388154418649",
+        "388151568791",
+        "388156886458",
+        "388154864166",
+        "388156686467"
+    };
+ 
+    private final String[] someJob = {
+        "SAN PABLO",
+        "PERSONAL",
+        "WACOM",
+        "MUSIMUNDO",
+        "DEVELOPER",
+        "JUEZ",
+        "ELECTRICISTA",
+        "AUDITOR",
+        "ABOGADO",
+        "ARQUITECTO",
+        "FI-UNJU",
+        "PROFESOR",
+        "INGENIERO",
+        "DENTISTA",
+        "PILOTO",
+        "ACTOR",
+        "REPARTIDOR",
+        "CARNICERO"
+    };
+ 
+    private final String[] someName = {
+        "Talia Martinez",
+        "Jorge Linz",
+        "Katrina Hernandez",
+        "Ana Maria Polo",
+        "Brisa Lourdes Valdez",
+        "Corina Grate",
+        "Julia Retamozo",
+        "Lina Quiroga",
+        "Analia Rodriguez",
+        "Mariana Ribas",
+        "Ludmila Sara Prince",
+        "Jose Raul Torrez",
+        "Mateo Ruiz",
+        "Jimena Gonzales",
+        "Farid Cerbantes",
+        "Rene Farfan",
+        "Constanza Belen Rementeria",
+        "Camila Lopez",
+    };
+ 
+    public ILinkedList<Contact> getListSchedule() {
+        return listSchedule;
+    }
+ 
+    public void setListSchedule(ILinkedList<Contact> listSchedule) {
+        this.listSchedule = listSchedule;
+    }
+ 
+}
