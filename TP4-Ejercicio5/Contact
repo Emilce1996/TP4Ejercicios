@@ -1,0 +1,58 @@
+package tp4ejercicio5;
+
+public class Contact {
+    
+    private String name;
+    private String job;
+    private String telefone;
+    private String mail;
+ 
+    public Contact(String name, String job, String telefone, String mail) {
+        this.name = name;
+        this.job = job;
+        this.telefone = telefone;
+        this.mail = mail;
+    }
+ 
+    public String getName() {
+        return name;
+    }
+ 
+    public void setName(String name) {
+        this.name = name;
+    }
+ 
+    public String getJob() {
+        return job;
+    }
+ 
+    public void setJob(String job) {
+        this.job = job;
+    }
+ 
+    public String getTelefone() {
+        return telefone;
+    }
+ 
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+ 
+    public String getMail() {
+        return mail;
+    }
+ 
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+ 
+    @Override
+    public String toString() {
+        return "Contacto{" + 
+                "\n Nombre= " + name + 
+                "\n Trabajo/Empresa= " + job +
+                "\n Telefono=" + telefone +
+                "\n Mail=" + mail +
+                "\n}";
+    }   
+}
