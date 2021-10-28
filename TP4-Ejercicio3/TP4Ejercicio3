@@ -1,0 +1,58 @@
+package tp4ejercicio3;
+import java.util.Scanner;
+import java.util.InputMismatchException;
+
+public class TP4Ejercicio3 {
+    
+    public static void main(String[] args) {
+        Scanner read = new Scanner(System.in);
+        DoubleLinkedListIteratorComparable<Integer> listaNaturales = new DoubleLinkedListIteratorComparable<>();
+        DoubleLinkedListIteratorComparable<Integer> listaMultiplo = new DoubleLinkedListIteratorComparable<>();
+        DoubleLinkedListIteratorComparable<Integer> listaDivisor = new DoubleLinkedListIteratorComparable<>();
+        DoubleLinkedListIteratorComparable<Integer> listaRestantes = new DoubleLinkedListIteratorComparable<>();
+        int num, valor;
+        boolean run;
+        try {
+            System.out.println("Cargar valores a la Lista...");
+            do {
+                num = Helper.randomNumeros();
+                listaNaturales.addLast(num);
+                System.out.println("Se generó el " + num);
+                run = Helper.yesOrNo("¿Quiere cargar más números?");
+            }while(run == true);         
+            System.out.println("\n");
+            System.out.print("Ingrese un valor para crear las listas: ");
+            valor = read.nextInt();
+            for (Integer element : listaNaturales) {
+                System.out.printf("%d ", element);
+                if (Helper.esMultiplo(element, valor)) {
+                    listaMultiplo.addInOrder(element);
+                }if (Helper.esDivisor(element, valor)) {
+                    listaDivisor.addInOrder(element);
+                }if (Helper.esMultiplo(element, valor) == false && Helper.esDivisor(element, valor) == false){
+                    listaRestantes.addInOrder(element);
+                }
+            }
+            System.out.println("\n");
+            System.out.println("***** Lista de Multiplos de "+ valor +" *****");
+            for (Integer element : listaMultiplo) {
+                    System.out.printf("%d ", element);
+            }
+            System.out.println("\n");
+            System.out.println("***** Lista de Divisores de "+ valor +" *****");
+            for (Integer element : listaDivisor) {
+                    System.out.printf("%d ", element);
+            }
+            System.out.println("\n");
+            System.out.println("***** Lista de números Restantes *****");
+            for (Integer element : listaRestantes) {
+                    System.out.printf("%d ", element);
+            }
+            System.out.println("\n");
+
+        } catch (InputMismatchException e) {
+                System.out.println("Error, caracter invalido");
+        }
+    }
+ 
+}
