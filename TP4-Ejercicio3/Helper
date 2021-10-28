@@ -1,0 +1,59 @@
+package tp4ejercicio3;
+import java.util.Scanner;
+import java.util.Random;
+
+public class Helper {
+    
+    public static Scanner read = new Scanner(System.in);
+    public static Random random = new Random();
+    
+    private static Integer validarEntero(String inputMessage, String errorMessage) {
+        while (true) {
+                try {
+                    System.out.println(inputMessage);
+                    return Integer.parseInt(read.nextLine());
+                }catch (NumberFormatException e) {System.out.println(errorMessage);}
+        }
+    }
+    
+    public static Integer validarEntero(String inputMessage) {
+        return validarEntero(inputMessage,"\nError: El valor ingresado no es un número entero");
+    }
+    
+    public static boolean yesOrNo(String question) {
+        char resp;
+        System.out.println("\n" + question + "\nPresione 's'-SI\nPresione 'n'-NO");
+        String line = read.nextLine();
+        if (line.length() > 0) {
+            resp = line.toLowerCase().charAt(0);
+            if (resp == 's')return true;
+            if (resp == 'n')return false;
+        }
+        System.out.println("La opción es incorrecta, intentelo de nuevo!");
+        return yesOrNo(question);
+    }
+    
+    public static int randomNumeros() {
+        int numero = random.nextInt(200);
+        return numero;
+    }
+    
+    public static boolean esMultiplo(int element, int valor) {
+            boolean multi = false;
+            if (element == 0) return false;
+            if (element % valor == 0) {
+            multi = true;
+            }
+            return multi;
+	}
+        
+        public static boolean esDivisor(int element, int valor) {
+            boolean multi = false;
+            if (element == 0) return false;
+            if (valor % element == 0) {
+            multi = true;
+            }
+            return multi;
+	}
+    
+}
